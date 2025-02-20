@@ -8,25 +8,32 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest  # Ambiente Linux base
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1) Clona il repository
       - uses: actions/checkout@v2
 
-      # Step 2) Installa Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      # Step 3) Installa le dipendenze
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4) Esegui i test
+      - name: Create .env from secret
+        run: echo "$ENV_CONTENT" > .env
+        env:
+          ENV_CONTENT: ${{ secrets.ENV }}
+
+      - name: Show files (debug)
+        run: ls -l
+
       - name: Run tests
         run: |
+          # Se usi python-dotenv in main.py, i test dovrebbero già
+          # trovare le variabili. Altrimenti puoi "export" a mano:
+          # export $(cat .env | xargs)
           pytest --maxfail=1 --disable-warnings
