@@ -8,22 +8,25 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Ambiente Linux base
 
     steps:
+      # Step 1) Clona il repository
       - uses: actions/checkout@v2
 
+      # Step 2) Installa Python
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
+      # Step 3) Installa le dipendenze
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Step 4) Esegui i test
       - name: Run tests
         run: |
-          # Inserisci il comando per avviare i test, es:
-          pytest tests
+          pytest --maxfail=1 --disable-warnings
